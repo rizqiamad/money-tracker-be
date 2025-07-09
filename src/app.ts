@@ -8,6 +8,7 @@ const app: Application = express();
 const PORT: number = 8000;
 
 app.use(cors());
+app.use(express.json());
 app.use(router);
 
 app.get("/api", (_req: Request, res: Response) => {
