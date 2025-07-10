@@ -3,12 +3,12 @@ import { sq } from "../db";
 import UserModel from "./user.model";
 
 interface IAccountModel {
-  id: number;
+  id?: number;
   user_id: number;
   account_name: string;
   total_balance: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
   deleted_at?: Date;
 }
 
@@ -45,7 +45,13 @@ const AccountModel = sq.define<Model<IAccountModel>>(
       type: DataTypes.DATE,
     },
   },
-  { timestamps: true, updatedAt: "updated_at", createdAt: "created_at", paranoid: true }
+  {
+    timestamps: true,
+    updatedAt: "updated_at",
+    createdAt: "created_at",
+    deletedAt: "deleted_at",
+    paranoid: true,
+  }
 );
 
 UserModel.hasMany(AccountModel, { foreignKey: "user_id" });

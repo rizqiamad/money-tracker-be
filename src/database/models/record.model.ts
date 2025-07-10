@@ -3,7 +3,7 @@ import { sq } from "../db";
 import AccountModel from "./account.model";
 
 interface IRecordModel {
-  id: number;
+  id?: number;
   account_id: number;
   type: "Expenses" | "Income";
   category:
@@ -21,7 +21,7 @@ interface IRecordModel {
     | "Investment";
   amount: number;
   description: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 const RecordModel = sq.define<Model<IRecordModel>>(

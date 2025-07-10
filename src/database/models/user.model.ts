@@ -2,12 +2,12 @@ import { DataTypes, Model } from "sequelize";
 import { sq } from "../db";
 
 interface IUserModel {
-  id: number;
+  id?: number;
   username: string;
   email: string;
   password: string;
   no_handphone: string;
-  created_at: Date;
+  created_at?: Date;
   deleted_at?: Date;
 }
 
@@ -46,7 +46,13 @@ const UserModel = sq.define<Model<IUserModel>>(
       type: DataTypes.DATE,
     },
   },
-  { timestamps: true, updatedAt: false, createdAt: "created_at", paranoid: true }
+  {
+    timestamps: true,
+    updatedAt: false,
+    createdAt: "created_at",
+    deletedAt: "deleted_at",
+    paranoid: true,
+  }
 );
 
 export default UserModel;

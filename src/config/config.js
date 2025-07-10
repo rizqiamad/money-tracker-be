@@ -1,4 +1,4 @@
-require("dotenv").config()
+import "./dotenv"
 
 const { POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT } = process.env;
 
