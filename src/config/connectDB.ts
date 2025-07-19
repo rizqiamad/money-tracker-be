@@ -1,10 +1,11 @@
 import { sq } from "../database/db";
+import logger from "../helpers/winston";
 
 export async function connectDB() {
   try {
     await sq.authenticate();
-    console.log("[Database]: Connection has been established successfully.");
+    logger.info("[Database]: Connection has been established successfully.");
   } catch (error) {
-    console.error("[Database]: Unable to connect to the database:", error);
+    logger.error("[Database]: Unable to connect to the database:", error);
   }
 }

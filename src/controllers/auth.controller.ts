@@ -5,7 +5,8 @@ import { QueryTypes } from "sequelize";
 import UserModel from "../database/models/user.model";
 import { LoginType, RegisterType } from "../validators/auth.validator";
 import { comparePassword, hashPassword } from "../helpers/bcrypt";
-import { generateToken, verifyToken } from "../helpers/jsonwebtoken";
+import { generateToken } from "../helpers/jsonwebtoken";
+import logger from "../helpers/winston";
 // import { sendEmail } from "../services/mailer";
 // import Handlebars from "handlebars";
 // import { resolve } from "path";
@@ -35,6 +36,7 @@ export class AuthController {
       // });
 
       res.status(200).send({ message: "Register success" });
+      logger.info("Register success");
     } catch (err) {
       next(err);
     }
@@ -58,6 +60,8 @@ export class AuthController {
         .status(200)
         .cookie("token", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
         .send({ message: "Login success", data: { email: user.dataValues.email, username: user.dataValues.username } });
+
+      logger.info("Login success");
     } catch (err) {
       next(err);
     }
