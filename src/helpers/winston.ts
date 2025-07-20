@@ -1,5 +1,5 @@
-import moment from "moment";
 import winston, { addColors } from "winston";
+import { moment } from "./moment";
 const { combine, timestamp, printf, colorize, align, prettyPrint } = winston.format;
 
 addColors({
@@ -13,11 +13,11 @@ const logger = winston.createLogger({
   level: "info",
   format: combine(
     timestamp({
-      format: moment().format("YY-MM-DD HH:mm:ss"),
+      format: moment("DD-MM-YY HH:mm:ss"),
     }),
     align(),
     prettyPrint(),
-    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`),
+    printf((info) => `[${info.timestamp}] (${info.level}): ${info.message}`),
     colorize({ all: true })
   ),
   transports: [new winston.transports.Console()],

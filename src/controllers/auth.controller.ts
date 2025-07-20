@@ -7,6 +7,7 @@ import { LoginType, RegisterType } from "../validators/auth.validator";
 import { comparePassword, hashPassword } from "../helpers/bcrypt";
 import { generateToken } from "../helpers/jsonwebtoken";
 import logger from "../helpers/winston";
+// import { moment } from "../helpers/moment";
 // import { sendEmail } from "../services/mailer";
 // import Handlebars from "handlebars";
 // import { resolve } from "path";
@@ -32,11 +33,10 @@ export class AuthController {
       //   from: "ahmadhanif759@gmail.com",
       //   to: email,
       //   subject: "Email verification",
-      //   html: template({ username, verificationLink: "", year: new Date().getFullYear() }),
+      //   html: template({ username, verificationLink: "", year: moment("Y") }),
       // });
 
       res.status(200).send({ message: "Register success" });
-      logger.info("Register success");
     } catch (err) {
       next(err);
     }
@@ -60,8 +60,6 @@ export class AuthController {
         .status(200)
         .cookie("token", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
         .send({ message: "Login success", data: { email: user.dataValues.email, username: user.dataValues.username } });
-
-      logger.info("Login success");
     } catch (err) {
       next(err);
     }
