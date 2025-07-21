@@ -27,8 +27,8 @@ async function initializeApp() {
   try {
     await connectDB();
     app.listen(PORT, () => logger.info(`[Server]: Your server running on => ${process.env.APP_URL}:${PORT}/api`));
-  } catch {
-    logger.error("[server]: Your server failed to run");
+  } catch (err) {
+    logger.error("[server]: Your server failed to run:", err);
     process.exit(1);
   }
 }

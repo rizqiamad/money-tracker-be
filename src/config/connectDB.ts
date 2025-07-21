@@ -5,7 +5,8 @@ export async function connectDB() {
   try {
     await sq.authenticate();
     logger.info("[Database]: Connection has been established successfully.");
-  } catch (error) {
-    logger.error("[Database]: Unable to connect to the database:", error);
+  } catch (err) {
+    logger.error("[Database]: Unable to connect to the database:", err);
+    throw new Error("Failed connect to database");
   }
 }
