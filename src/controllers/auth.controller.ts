@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpException } from "../errors/httpException";
 import { sq } from "../database/db";
-import { QueryTypes } from "sequelize";
 import UserModel from "../database/models/user.model";
 import { LoginType, RegisterType } from "../validators/auth.validator";
 import { comparePassword, hashPassword } from "../helpers/bcrypt";
 import { generateToken } from "../helpers/jsonwebtoken";
-import logger from "../helpers/winston";
+import { tipe } from "../helpers/tipe";
 // import { moment } from "../helpers/moment";
 // import { sendEmail } from "../services/mailer";
 // import Handlebars from "handlebars";
@@ -16,13 +15,7 @@ export class AuthController {
   static async register(req: Request<{}, {}, RegisterType>, res: Response, next: NextFunction) {
     const { username, email, password, no_handphone } = req.body;
     try {
-      const checkAccount = await sq.query(
-        "select * from users u where u.email = :email or u.no_handphone = :no_handphone",
-        {
-          replacements: { email, no_handphone },
-          type: QueryTypes.SELECT,
-        }
-      );
+      const checkAccount = await sq.query("select * from users u where u.email = :email or u.no_handphone = :no_handphone", tipe({ email, no_handphone }));
 
       if (checkAccount.length) throw new HttpException("Your email or number already registered", 400);
 
