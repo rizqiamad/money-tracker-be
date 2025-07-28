@@ -1,9 +1,11 @@
 services:
   db:
     image: postgres:latest
-    container_name: money-tracker-db
+    container_name: money-tracker
     restart: always
     ports:
       - "5432:5432"
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: "mydb"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "secret"

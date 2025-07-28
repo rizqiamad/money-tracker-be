@@ -15,9 +15,9 @@ export class AuthController {
   static async register(req: Request<{}, {}, RegisterType>, res: Response, next: NextFunction) {
     const { username, email, password, no_handphone } = req.body;
     try {
-      const checkAccount = await sq.query("select * from users u where u.email = :email or u.no_handphone = :no_handphone", tipe({ email, no_handphone }));
+      const checkAccount = await sq.query("select * from users u where u.email = :email", tipe({ email, no_handphone }));
 
-      if (checkAccount.length) throw new HttpException("Your email or number already registered", 400);
+      if (checkAccount.length) throw new HttpException("Your email already registered", 400);
 
       await UserModel.create({ username, email, password: hashPassword(password), no_handphone });
 
