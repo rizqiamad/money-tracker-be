@@ -13,13 +13,13 @@ import { tipe } from "../helpers/tipe";
 
 export class AuthController {
   static async register(req: Request<{}, {}, RegisterType>, res: Response, next: NextFunction) {
-    const { username, email, password, no_handphone } = req.body;
+    const { username, email, password } = req.body;
     try {
-      const checkAccount = await sq.query("select * from users u where u.email = :email", tipe({ email, no_handphone }));
+      const checkAccount = await sq.query("select * from users u where u.email = :email", tipe({ email }));
 
       if (checkAccount.length) throw new HttpException("Your email already registered", 400);
 
-      await UserModel.create({ username, email, password: hashPassword(password), no_handphone });
+      await UserModel.create({ username, email, password: hashPassword(password) });
 
       // const template = Handlebars.compile(resolve("..", "views", "emailVerification.hbs"));
       // await sendEmail({

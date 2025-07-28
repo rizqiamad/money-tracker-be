@@ -10,7 +10,7 @@ const UserSchema = z.strictObject(
   "Your body request is not valid"
 );
 
-export const RegisterSchema = z.clone(UserSchema);
+export const RegisterSchema = z.clone(UserSchema).omit({ no_handphone: true });
 export const LoginSchema = UserSchema.omit({ no_handphone: true, username: true });
 
 export type RegisterType = z.infer<typeof RegisterSchema>;

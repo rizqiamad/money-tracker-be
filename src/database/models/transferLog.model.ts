@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sq } from "../db";
-import PoolAccountsUsersModel from "./poolAccountsUsers.model";
+import PoolAccountsUsersModel from "./poolAccountUser.model";
 
 interface ITransferLogModel {
   id?: number;

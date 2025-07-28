@@ -21,7 +21,7 @@ const UserModel = sq.define<Model<IUserModel>>(
     email: { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     no_handphone: { type: DataTypes.STRING },
-    is_verified: { type: DataTypes.NUMBER, allowNull: false },
+    is_verified: { type: DataTypes.NUMBER, defaultValue: 0 },
     created_at: { type: DataTypes.DATE, allowNull: false },
     updated_at: { type: DataTypes.DATE, allowNull: false },
     deleted_at: { type: DataTypes.DATE },

@@ -15,7 +15,7 @@ module.exports = {
       email: { type: Sequelize.STRING, allowNull: false },
       password: { type: Sequelize.STRING, allowNull: false },
       no_handphone: { type: Sequelize.STRING },
-      is_verfied: { type: Sequelize.SMALLINT, defaultValue: 0 },
+      is_verified: { type: Sequelize.SMALLINT, defaultValue: 0 },
       created_at: { type: Sequelize.DATE, allowNull: false },
       updated_at: { type: Sequelize.DATE, allowNull: false },
       deleted_at: { type: Sequelize.DATE, defaultValue: null },
@@ -71,10 +71,10 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("users");
-    await queryInterface.dropTable("accounts");
-    await queryInterface.dropTable("pool_accounts_users");
-    await queryInterface.dropTable("records");
     await queryInterface.dropTable("transfer_logs");
+    await queryInterface.dropTable("records");
+    await queryInterface.dropTable("pool_accounts_users");
+    await queryInterface.dropTable("accounts");
+    await queryInterface.dropTable("users");
   },
 };

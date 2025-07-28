@@ -10,7 +10,7 @@ import { requestLogger } from "./middlewares/requestLogger";
 import { HttpException } from "./errors/httpException";
 
 const app: Application = express();
-const PORT: number = 8000;
+const PORT: number = 8080;
 
 app.use(cors());
 app.use(express.json());

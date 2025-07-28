@@ -1,5 +1,5 @@
-import { QueryTypes, Transaction } from "sequelize";
+import { BindOrReplacements, QueryOptionsWithType, QueryTypes, Transaction } from "sequelize";
 
-export function tipe(replacement?: Object, t?: Transaction) {
-  return { type: QueryTypes.SELECT, replacement, transaction: t };
+export function tipe(replacements?: BindOrReplacements, t?: Transaction): QueryOptionsWithType<QueryTypes.SELECT> {
+  return { type: QueryTypes.SELECT, replacements, transaction: t };
 }
