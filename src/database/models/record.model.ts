@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sq } from "../db";
-import PoolAccountsUsersModel from "./pool_accounts_users.model";
+import PoolAccountsUsersModel from "./poolAccountsUsers.model";
 
 interface IRecordModel {
   id?: number;
