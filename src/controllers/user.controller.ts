@@ -10,7 +10,7 @@ export class UserController {
     const { id } = req.user;
     try {
       const user = await UserModel.findByPk(id);
-      res.status(200).send({ data: user });
+      res.status(200).send({ data: { id: user?.dataValues.id, username: user?.dataValues.username, email: user?.dataValues.email, no_handphone: user?.dataValues.no_handphone, created_at: user?.dataValues.created_at } });
     } catch (err) {
       next(err);
     }
