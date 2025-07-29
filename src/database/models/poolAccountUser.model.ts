@@ -28,9 +28,9 @@ const PoolAccountsUsersModel = sq.define<Model<IPoolAccountsUsersModel>>(
 );
 
 UserModel.hasMany(PoolAccountsUsersModel, { foreignKey: "user_id" });
-PoolAccountsUsersModel.belongsTo(UserModel);
+PoolAccountsUsersModel.belongsTo(UserModel, { foreignKey: "user_id" });
 
 AccountModel.hasMany(PoolAccountsUsersModel, { foreignKey: "account_id" });
-PoolAccountsUsersModel.belongsTo(AccountModel);
+PoolAccountsUsersModel.belongsTo(AccountModel, { foreignKey: "account_id" });
 
 export default PoolAccountsUsersModel;

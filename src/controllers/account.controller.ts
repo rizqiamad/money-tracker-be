@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { sq } from "../database/db";
 import { tipe } from "../helpers/tipe";
-import { AccountType } from "../validators/accounts.validators";
+import { AccountType } from "../validators/account.validators";
 import AccountModel from "../database/models/account.model";
 
 export class AccountController {
