@@ -10,11 +10,12 @@ import logger from "../helpers/winston";
  */
 
 export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
-  logger.error(`${req.method} ${req.originalUrl} - ${err.message}`);
   if (err instanceof ZodError) {
+    logger.error(`${req.method} ${req.originalUrl} - Body request is not valid`);
     res.status(400).send({ errors: err.issues.map((iss) => ({ path: iss.path[0], message: iss.message })) });
     return;
   }
+  logger.error(`${req.method} ${req.originalUrl} - ${err.message}`);
   if (err instanceof HttpException) {
     res.status(err.status).send({ message: err.message });
     return;
