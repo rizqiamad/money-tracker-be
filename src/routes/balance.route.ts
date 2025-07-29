@@ -5,6 +5,9 @@ import { BalanceController } from "../controllers/balance.controller";
 
 const router = Router();
 
+// GET
+router.get("/", BalanceController.getBalances);
+
 // POST
 router.post("/", schemaValidator(BalanceSchema), BalanceController.addBalance);
 
