@@ -31,7 +31,9 @@ const TransferLogModel = sq.define<Model<ITransferLogModel>>(
 );
 
 PoolAccountsUsersModel.hasMany(TransferLogModel, { foreignKey: "pool_accounts_users_from_id" });
+TransferLogModel.belongsTo(PoolAccountsUsersModel, { foreignKey: "pool_accounts_users_from_id" });
+
 PoolAccountsUsersModel.hasMany(TransferLogModel, { foreignKey: "pool_accounts_users_to_id" });
-TransferLogModel.belongsTo(PoolAccountsUsersModel);
+TransferLogModel.belongsTo(PoolAccountsUsersModel, { foreignKey: "pool_accounts_users_to_id" });
 
 export default TransferLogModel;

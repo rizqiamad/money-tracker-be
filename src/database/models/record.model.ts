@@ -31,6 +31,6 @@ const RecordModel = sq.define<Model<IRecordModel>>(
 );
 
 PoolAccountsUsersModel.hasMany(RecordModel, { foreignKey: "pool_accounts_users_id" });
-RecordModel.belongsTo(PoolAccountsUsersModel);
+RecordModel.belongsTo(PoolAccountsUsersModel, { foreignKey: "pool_accounts_users_id" });
 
 export default RecordModel;
