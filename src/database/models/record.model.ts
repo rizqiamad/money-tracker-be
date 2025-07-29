@@ -8,7 +8,7 @@ interface IRecordModel {
   type?: "income" | "expenses";
   category?: "residence" | "meal" | "lifestyle" | "equipment" | "transportation" | "charity" | "health" | "salary" | "investment" | "freelance" | "internet" | "etc";
   amount?: number;
-  description?: string;
+  description?: string | null;
   created_at?: Date;
   updated_at?: Date;
   deleted_at?: Date;

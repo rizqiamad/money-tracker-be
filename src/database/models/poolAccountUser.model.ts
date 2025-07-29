@@ -5,9 +5,9 @@ import AccountModel from "./account.model";
 
 interface IPoolAccountsUsersModel {
   id?: number;
-  user_id?: number;
-  account_id?: number;
-  total_balance?: number;
+  user_id: number;
+  account_id: number;
+  total_balance: number;
   created_at?: Date;
   updated_at?: Date;
   deleted_at?: Date;
