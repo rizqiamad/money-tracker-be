@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AccountController } from "../controllers/account.controller";
 import { schemaValidator } from "../middlewares/schemaValidator";
-import { AccountSchema } from "../validators/account.validators";
+import { AccountSchema } from "../validators/account.validator";
 
 const router = Router();
 

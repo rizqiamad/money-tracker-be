@@ -9,7 +9,7 @@ export class BalanceController {
     const user_id = req.user.id;
     try {
       const balances = await sq.query(
-        `select a.account_name as account, pau.total_balance, pau.created_at
+        `select a.account_name as account, pau.total_balance, pau.created_at, pau.updated_at
         from pool_accounts_users pau 
         join accounts a on pau.account_id = a.id 
         where pau.user_id = :user_id`,
