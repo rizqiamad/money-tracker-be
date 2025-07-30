@@ -5,6 +5,9 @@ import { RecordSchema } from "../validators/record.validator";
 
 const router = Router();
 
+// GET
+router.get("/", RecordController.getRecords);
+
 // POST
 router.post("/", schemaValidator(RecordSchema), RecordController.addRecord);
 

@@ -12,7 +12,8 @@ export class BalanceController {
         `select pau.id, a.account_name as account, pau.total_balance, pau.created_at, pau.updated_at
         from pool_accounts_users pau 
         join accounts a on pau.account_id = a.id 
-        where pau.user_id = :user_id and pau.deleted_at isnull`,
+        where pau.user_id = :user_id and pau.deleted_at isnull
+        order by pau.id`,
         tipe({ user_id })
       );
       res.status(200).send({ data: balances });
