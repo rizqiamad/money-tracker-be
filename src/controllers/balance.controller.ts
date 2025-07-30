@@ -9,10 +9,10 @@ export class BalanceController {
     const user_id = req.user.id;
     try {
       const balances = await sq.query(
-        `select a.account_name as account, pau.total_balance, pau.created_at, pau.updated_at
+        `select pau.id, a.account_name as account, pau.total_balance, pau.created_at, pau.updated_at
         from pool_accounts_users pau 
         join accounts a on pau.account_id = a.id 
-        where pau.user_id = :user_id`,
+        where pau.user_id = :user_id and pau.deleted_at isnull`,
         tipe({ user_id })
       );
       res.status(200).send({ data: balances });
@@ -24,7 +24,12 @@ export class BalanceController {
     const { account_id, total_balance } = req.body;
     const user_id = req.user.id;
     try {
-      const checkBalance: any[] = await sq.query(`select * from pool_accounts_users pau where pau.user_id = :user_id and pau.account_id = :account_id`, tipe({ user_id, account_id }));
+      const checkBalance: any[] = await sq.query(
+        `select * 
+        from pool_accounts_users pau 
+        where pau.user_id = :user_id and pau.account_id = :account_id and pau.deleted_at isnull`,
+        tipe({ user_id, account_id })
+      );
       if (checkBalance.length) {
         res.status(400).send({ message: "You already have balances in this account" });
         return;

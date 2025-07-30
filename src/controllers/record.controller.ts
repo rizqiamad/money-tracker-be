@@ -17,12 +17,12 @@ export class RecordController {
       }
 
       if (type == "expenses") {
-        balance.dataValues.total_balance -= amount;
+        balance.decrement("total_balance", { by: amount });
       } else {
-        balance.dataValues.total_balance += amount;
+        balance.increment("total_balance", { by: amount });
       }
 
-      balance.save({ transaction: t });
+      await balance.save({ transaction: t });
 
       await RecordModel.create({ pool_accounts_users_id, type, category, amount, description }, { transaction: t });
       await t.commit();

@@ -7,7 +7,11 @@ import AccountModel from "../database/models/account.model";
 export class AccountController {
   static async getAccounts(_req: Request, res: Response, next: NextFunction) {
     try {
-      const accounts = await sq.query(`select a.id, a.account_name as account from accounts a where a.deleted isnull;`, tipe());
+      const accounts = await sq.query(
+        `select a.id, a.account_name as account 
+        from accounts a where a.deleted_at isnull;`,
+        tipe()
+      );
       res.status(200).send({ data: accounts });
     } catch (err) {
       next(err);
