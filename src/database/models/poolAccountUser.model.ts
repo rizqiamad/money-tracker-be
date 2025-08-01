@@ -7,7 +7,8 @@ interface IPoolAccountsUsersModel {
   id?: number;
   user_id: number;
   account_id: number;
-  total_balance: number;
+  initial_balance: number;
+  actual_balance: number;
   created_at?: Date;
   updated_at?: Date;
   deleted_at?: Date;
@@ -19,7 +20,8 @@ const PoolAccountsUsersModel = sq.define<Model<IPoolAccountsUsersModel>>(
     id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.INTEGER, allowNull: false, references: { key: "id", model: "users" } },
     account_id: { type: DataTypes.INTEGER, allowNull: false, references: { key: "id", model: "accounts" } },
-    total_balance: { type: DataTypes.INTEGER, defaultValue: 0 },
+    initial_balance: { type: DataTypes.INTEGER, defaultValue: 0 },
+    actual_balance: { type: DataTypes.INTEGER, defaultValue: 0 },
     created_at: { type: DataTypes.DATE, allowNull: false },
     updated_at: { type: DataTypes.DATE, allowNull: false },
     deleted_at: { type: DataTypes.DATE, defaultValue: null },

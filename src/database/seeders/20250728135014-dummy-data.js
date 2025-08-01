@@ -3,64 +3,55 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
     const now = new Date();
+
+    // USERS
     await queryInterface.bulkInsert("users", [
       { username: "Andi Widjayanto", email: "andi@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
       { username: "Budi Kusuma", email: "budi.kusuma@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
-      { username: "Caca Mariska", email: "itscaca@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
-      { username: "Denis Adit", email: "dodit@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
+      { username: "Caca Mariska", email: "caca.mariska@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
+      { username: "Deni Santoso", email: "deni@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
+      { username: "Eka Rahma", email: "eka.rahma@gmail.com", password: "$2a$12$G5UGzNuozGY95zfAkQjkbeoIrXQnjrn6/au/KDo72MZYx.72aLa5.", created_at: now, updated_at: now },
     ]);
 
+    // ACCOUNTS
     await queryInterface.bulkInsert("accounts", [
       { account_name: "BCA", created_at: now, updated_at: now },
       { account_name: "Cash", created_at: now, updated_at: now },
-      { account_name: "BSI", created_at: now, updated_at: now },
-      { account_name: "BNI", created_at: now, updated_at: now },
-      { account_name: "Dana", created_at: now, updated_at: now },
       { account_name: "Gopay", created_at: now, updated_at: now },
     ]);
 
+    // POOL ACCOUNTS USERS
     await queryInterface.bulkInsert("pool_accounts_users", [
-      { user_id: 1, account_id: 1, total_balance: 20000000, created_at: now, updated_at: now },
-      { user_id: 1, account_id: 2, total_balance: 500000, created_at: now, updated_at: now },
-      { user_id: 1, account_id: 3, total_balance: 6300000, created_at: now, updated_at: now },
-      { user_id: 2, account_id: 1, total_balance: 11000000, created_at: now, updated_at: now },
-      { user_id: 3, account_id: 1, total_balance: 23000000, created_at: now, updated_at: now },
-      { user_id: 3, account_id: 3, total_balance: 1000000, created_at: now, updated_at: now },
-      { user_id: 3, account_id: 5, total_balance: 2000000, created_at: now, updated_at: now },
+      { user_id: 1, account_id: 1, initial_balance: 1600000, actual_balance: 900000, created_at: now, updated_at: now },
+      { user_id: 1, account_id: 2, initial_balance: 500000, actual_balance: 565000, created_at: now, updated_at: now },
+      { user_id: 2, account_id: 1, initial_balance: 1000000, actual_balance: 3000000, created_at: now, updated_at: now },
+      { user_id: 3, account_id: 2, initial_balance: 650000, actual_balance: 550000, created_at: now, updated_at: now },
+      { user_id: 3, account_id: 1, initial_balance: 1200000, actual_balance: 5669000, created_at: now, updated_at: now },
+      { user_id: 3, account_id: 3, initial_balance: 20000, actual_balance: 50000, created_at: now, updated_at: now },
+      { user_id: 4, account_id: 3, initial_balance: 21500, actual_balance: 21500, created_at: now, updated_at: now },
     ]);
 
+    // RECORDS
     await queryInterface.bulkInsert("records", [
-      { pool_accounts_users_id: 1, type: "income", category: "salary", amount: 20000000, description: "gaji bulan pertama", created_at: now, updated_at: now },
-      { pool_accounts_users_id: 4, type: "income", category: "salary", amount: 6000000, description: "gaji", created_at: now, updated_at: now },
-      { pool_accounts_users_id: 5, type: "expenses", category: "lifestyle", amount: 500000, created_at: now, updated_at: now },
-      { pool_accounts_users_id: 1, type: "expenses", category: "meal", amount: 20000, description: "sarapan", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 1, type: "income", category: "salary", amount: 3000000, description: "Gaji", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 2, type: "expenses", category: "meal", amount: 75000, description: "Makan pagi", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 2, type: "expenses", category: "meal", amount: 25000, description: "Makan siang", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 2, type: "expenses", category: "meal", amount: 35000, description: "Makan malam", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 1, type: "expenses", category: "lifestyle", amount: 3500000, description: "Hp baru", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 3, type: "income", category: "freelance", amount: 2000000, description: "Project", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 4, type: "expenses", category: "internet", amount: 100000, description: "Internet bulanan", created_at: now, updated_at: now },
+      { pool_accounts_users_id: 5, type: "income", category: "salary", amount: 4500000, description: "Gaji", created_at: now, updated_at: now },
     ]);
 
+    // TRANSFER LOGS (antar akun milik user yang sama)
     await queryInterface.bulkInsert("transfer_logs", [
-      { pool_accounts_users_from_id: 1, amount_sent: 202500, pool_accounts_users_to_id: 2, amount_received: 200000, description: "wd", created_at: now, updated_at: now },
-      { pool_accounts_users_from_id: 3, amount_sent: 1002500, pool_accounts_users_to_id: 1, amount_received: 1000000, created_at: now, updated_at: now },
-      { pool_accounts_users_from_id: 5, amount_sent: 2502500, pool_accounts_users_to_id: 6, amount_received: 2500000, created_at: now, updated_at: now },
-      { pool_accounts_users_from_id: 5, amount_sent: 502500, pool_accounts_users_to_id: 7, amount_received: 500000, description: "wd", created_at: now, updated_at: now },
+      { pool_accounts_users_from_id: 1, amount_sent: 200000, pool_accounts_users_to_id: 2, amount_received: 200000, description: "Tarik tunai", created_at: now, updated_at: now },
+      { pool_accounts_users_from_id: 5, amount_sent: 31000, pool_accounts_users_to_id: 6, amount_received: 30000, created_at: now, updated_at: now },
     ]);
   },
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
     await queryInterface.bulkDelete("transfer_logs", null, {});
     await queryInterface.bulkDelete("records", null, {});
     await queryInterface.bulkDelete("pool_accounts_users", null, {});

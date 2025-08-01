@@ -33,9 +33,9 @@ export class RecordController {
       }
 
       if (type == "expenses") {
-        balance.decrement("total_balance", { by: amount });
+        balance.decrement("actual_balance", { by: amount });
       } else {
-        balance.increment("total_balance", { by: amount });
+        balance.increment("actual_balance", { by: amount });
       }
 
       await balance.save({ transaction: t });

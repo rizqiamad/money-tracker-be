@@ -22,7 +22,7 @@ export class BalanceController {
     }
   }
   static async addBalance(req: Request<{}, {}, BalanceType>, res: Response, next: NextFunction) {
-    const { account_id, total_balance } = req.body;
+    const { account_id, initial_balance } = req.body;
     const user_id = req.user.id;
     try {
       const checkBalance: any[] = await sq.query(
@@ -36,7 +36,7 @@ export class BalanceController {
         return;
       }
 
-      await PoolAccountsUsersModel.create({ user_id, account_id, total_balance });
+      await PoolAccountsUsersModel.create({ user_id, account_id, initial_balance, actual_balance: initial_balance });
       res.status(200).send({ message: "success" });
     } catch (err) {
       next(err);
