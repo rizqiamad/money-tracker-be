@@ -3,6 +3,7 @@ import { AccountController } from "../controllers/account.controller";
 import { schemaValidator } from "../middlewares/schemaValidator";
 import { AccountSchema } from "../validators/account.validator";
 
+/* /api/accounts */
 const router = Router();
 
 // GET

@@ -3,6 +3,7 @@ import { schemaValidator } from "../middlewares/schemaValidator";
 import { BalanceSchema } from "../validators/balance.validator";
 import { BalanceController } from "../controllers/balance.controller";
 
+/* /api/balances */
 const router = Router();
 
 // GET

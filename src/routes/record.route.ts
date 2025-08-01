@@ -3,6 +3,7 @@ import { RecordController } from "../controllers/record.controller";
 import { schemaValidator } from "../middlewares/schemaValidator";
 import { RecordSchema } from "../validators/record.validator";
 
+/* /api/records */
 const router = Router();
 
 // GET

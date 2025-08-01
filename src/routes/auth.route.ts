@@ -3,6 +3,7 @@ import { AuthController } from "../controllers/auth.controller";
 import { schemaValidator } from "../middlewares/schemaValidator";
 import { LoginSchema, RegisterSchema } from "../validators/auth.validator";
 
+/* /api/auth */
 const router = Router();
 
 // POST

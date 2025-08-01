@@ -6,6 +6,7 @@ import recordRouter from "./record.route";
 import userRouter from "./user.route";
 import { verifyCookies } from "../middlewares/verifyCookies";
 
+/* /api */
 const router = Router();
 
 router.use("/accounts", verifyCookies, accountRouter);
