@@ -8,7 +8,7 @@ interface ITransferLogModel {
   amount_sent: number;
   pool_accounts_users_to_id: number;
   amount_received: number;
-  description: string;
+  description?: string | null;
   created_at?: Date;
   updated_at?: Date;
   deleted_at?: Date;
