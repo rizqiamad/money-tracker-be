@@ -47,5 +47,5 @@ export const MsUserModel = sq.define<Model<IMsUser>>(
       type: DataTypes.DATE,
     },
   },
-  { createdAt: "deleted_at", updatedAt: "updated_at", deletedAt: "deleted_at" }
+  { createdAt: "created_at", updatedAt: "updated_at", deletedAt: "deleted_at" }
 )
