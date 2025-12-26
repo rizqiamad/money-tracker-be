@@ -5,13 +5,16 @@ import { createServer, Server } from "http"
 import morgan from "morgan"
 import router from "."
 import { errorHandler } from "./helpers/error"
+import cookieParser from "cookie-parser"
 
 const app: Application = express()
 const server: Server = createServer(app)
 
+app.use(express.static("public"))
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(morgan("dev"))
+app.use(cookieParser())
 app.use("/api", router)
 
 app.use((_req: Request, res: Response) => {

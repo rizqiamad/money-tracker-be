@@ -5,5 +5,6 @@ import { Controller } from "./controller"
 const router = Router()
 
 router.post("/register", Controller.register)
+router.post("/login", Controller.login)
 
 export default router

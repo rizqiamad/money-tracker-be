@@ -12,6 +12,7 @@ export class CustomError extends Error {
 }
 
 export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
+  console.log(err)
   if (err instanceof CustomError) {
     res.status(err.status).send({ status: err.status, message: err.message, data: err.data })
   } else {

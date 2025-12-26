@@ -13,7 +13,7 @@ interface IMsUser {
   deleted_at?: Date
 }
 
-export const MsUserModel = sq.define<Model<IMsUser>>(
+const MsUserModel = sq.define<Model<IMsUser>>(
   "ms_user",
   {
     id: {
@@ -23,12 +23,15 @@ export const MsUserModel = sq.define<Model<IMsUser>>(
     },
     username: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     no_handphone: {
       type: DataTypes.STRING,
@@ -49,3 +52,5 @@ export const MsUserModel = sq.define<Model<IMsUser>>(
   },
   { createdAt: "created_at", updatedAt: "updated_at", deletedAt: "deleted_at" }
 )
+
+export default MsUserModel
