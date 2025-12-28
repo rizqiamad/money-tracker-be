@@ -7,6 +7,6 @@ const router = Router()
 router.post("/register", Controller.register)
 router.post("/login", Controller.login)
 router.post("/veriy-otp", Controller.verifyOtp)
-router.post("/new-otp", Controller.verifyOtp)
+router.post("/send-otp", Controller.verifyOtp)
 
 export default router
