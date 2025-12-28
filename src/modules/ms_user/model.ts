@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize"
 import { sq } from "../../config/connection"
 
-interface IMsUser {
+export interface IMsUser {
   id?: string
   username?: string
   email?: string

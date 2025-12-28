@@ -1,6 +1,7 @@
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
-export interface IJwtPayload {
+export interface IJwtPayload extends JwtPayload {
+  id?: string
   username?: string
   email?: string
 }
@@ -10,5 +11,5 @@ export function signJwt(payload: IJwtPayload) {
 }
 
 export function verifyJwt(token: string) {
-  return jwt.verify(token, process.env.JWT_SECRET!)
+  return jwt.verify(token, process.env.JWT_SECRET!) as IJwtPayload
 }

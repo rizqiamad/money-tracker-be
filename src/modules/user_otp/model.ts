@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize"
 import { sq } from "../../config/connection"
 
-interface IUserOtp {
+export interface IUserOtp {
   id?: number
   ms_user_id?: string
   otp?: string
