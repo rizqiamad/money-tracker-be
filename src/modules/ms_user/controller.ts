@@ -7,7 +7,8 @@ import { customAlphabet } from "nanoid"
 import { sendEmail } from "../../helpers/nodemailer"
 import { render } from "@react-email/components"
 import { sq } from "../../config/connection"
-import EmailOtp from "../../template/emailOtp"
+import EmailOtp from "../../template/email_otp"
+import EmailForgetPassword from "../../template/email_forget_password"
 import { IJwtPayload, signJwt, verifyJwt } from "../../helpers/jsonwebtoken"
 import { tipe } from "../../helpers/tipe"
 
@@ -18,6 +19,11 @@ export class Controller {
       const { username, email, password } = req.body
       if (!username || !email || !password) {
         throw new CustomError(400, "payload is not valid")
+      }
+
+      const user = await MsUserModel.findOne({ where: { email } })
+      if (user) {
+        throw new CustomError(400, "your email has been registered")
       }
 
       // hash password dan create data untuk user
@@ -46,10 +52,7 @@ export class Controller {
       })
       t.commit()
 
-      const payload: IJwtPayload = {
-        id,
-        email,
-      }
+      const payload: IJwtPayload = { id, email }
       const token = signJwt(payload)
 
       res.status(200).send({ status: 200, message: "otp code has been sent to your email", token })
@@ -75,10 +78,7 @@ export class Controller {
         throw new CustomError(400, "your email has not been verified yet")
       }
 
-      const payload: IJwtPayload = {
-        username: user.dataValues.username,
-        email: user.dataValues.email,
-      }
+      const payload: IJwtPayload = { username: user.dataValues.username, email: user.dataValues.email }
       const token = signJwt(payload)
 
       res
@@ -100,16 +100,17 @@ export class Controller {
         where uo.ms_user_id = :ms_user_id
           and uo.otp = :otp
           and uo.otp_type = :otp_type
-          and uo.expired_at < now()
+          and uo.expired_at > now()
           and uo.used_at isnull`,
         tipe({ ms_user_id, otp, otp_type })
       )) as IUserOtp[]
 
-      if (!actual_otp) {
+      if (!actual_otp.length) {
         throw new CustomError(400, "otp is not valid")
       }
 
       await UserOtpModel.update({ used_at: new Date() }, { where: { id: actual_otp[0].id } })
+      await MsUserModel.update({ is_verified: 1 }, { where: { id: ms_user_id } })
       res.status(200).send({ status: 200, message: "success" })
     } catch (err) {
       next(err)
@@ -135,10 +136,36 @@ export class Controller {
       await sendEmail({
         from: process.env.EMAIL_ADDRESS,
         to: email,
-        subject: "Your Otp Password For the registration, keep it secret",
+        subject: "Resend otp, keep it secret",
         html,
       })
       res.status(200).send({ status: 200, message: "otp code has been sent to your email" })
+    } catch (err) {
+      next(err)
+    }
+  }
+  static async forgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body
+
+      const user = await MsUserModel.findOne({ where: { email } })
+      if (!user) {
+        throw new CustomError(400, "email not found")
+      }
+
+      const payload: IJwtPayload = { id: user.dataValues.id, email }
+      const token = signJwt(payload)
+
+      const link = `${process.env.FRONTEND_URL}/forgot-password/reset/${token}`
+      // kirim link forget password melalui email yang didaftarkan
+      const html = await render(EmailForgetPassword({ link, url: process.env.FRONTEND_URL }))
+      await sendEmail({
+        from: process.env.EMAIL_ADDRESS,
+        to: email,
+        subject: "Forgot Password",
+        html,
+      })
+      res.status(200).send({ status: 200, message: "success" })
     } catch (err) {
       next(err)
     }
