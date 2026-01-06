@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
@@ -43,28 +44,33 @@ export default function EmailForgetPassword({ link, url }: IProps) {
               </Heading>
 
               <Text className="text-[14px] leading-[22px] text-[#4b5563] mb-4">
-                We received a request to reset your <strong>Guardana</strong> password.
-                Use the verification code below to continue.
+                We received a request to reset your <strong>Guardana</strong> account
+                password. Click the button below to set a new password.
               </Text>
 
-              <Text className="text-[14px] leading-[22px] text-[#4b5563] mb-6">
-                If you didn't request a password reset, please ignore this email
-                or contact our support team.
-              </Text>
-
-              {/* OTP Box */}
-              <Section className="text-center bg-[#f9fafb] border border-[#e5e7eb] rounded-md py-5 mb-4">
-                <Text className="text-[12px] text-[#6b7280] mb-2 m-0">
-                  Reset Password Code
-                </Text>
-
-                <Text className="text-[32px] font-bold tracking-[6px] m-0">
-                  {link}
-                </Text>
+              {/* CTA Button */}
+              <Section className="text-center my-6">
+                <Button
+                  href={link}
+                  className="bg-[#2563eb] text-white px-6 py-3 rounded-md text-[14px] font-semibold"
+                >
+                  Reset Password
+                </Button>
               </Section>
 
-              <Text className="text-[12px] text-[#6b7280] text-center">
-                This code is valid for 10 minutes
+              {/* Fallback */}
+              <Text className="text-[12px] text-[#6b7280] leading-[18px]">
+                If the button above doesn't work, copy and paste this link into
+                your browser:
+              </Text>
+
+              <Text className="text-[12px] text-[#2563eb] break-all">
+                {link}
+              </Text>
+
+              <Text className="text-[12px] text-[#6b7280] mt-4">
+                This password reset link will expire in <strong>10 minutes</strong>.
+                If you didn't request a password reset, you can safely ignore this email.
               </Text>
             </Section>
 

@@ -8,11 +8,101 @@ import { sendEmail } from "../../helpers/nodemailer"
 import { render } from "@react-email/components"
 import { sq } from "../../config/connection"
 import EmailOtp from "../../template/email_otp"
-import EmailForgetPassword from "../../template/email_forget_password"
+import EmailForgetPassword from "../../template/email_forgot_password"
 import { IJwtPayload, signJwt, verifyJwt } from "../../helpers/jsonwebtoken"
 import { tipe } from "../../helpers/tipe"
 
 export class Controller {
+  static async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { old_password, new_password } = req.body
+      const { email } = req.user as IJwtPayload
+
+      const user = await MsUserModel.findOne({ where: { email } })
+      if (!user) {
+        throw new CustomError(400, "email not found")
+      }
+
+      const is_match = await comparePassword(old_password, user?.dataValues.password as string)
+      if (!is_match) {
+        throw new CustomError(400, "your previous password is wrong")
+      }
+
+      const hashed_password = await hashPassword(new_password)
+      await MsUserModel.update({ password: hashed_password }, { where: { email } })
+
+      res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
+  static async forgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body
+
+      const user = await MsUserModel.findOne({ where: { email } })
+      if (!user) {
+        throw new CustomError(400, "email not found")
+      }
+
+      const payload: IJwtPayload = { id: user.dataValues.id, email }
+      const token = signJwt(payload)
+
+      const link = `${process.env.FRONTEND_URL}/reset-password/${token}`
+      // kirim link forget password melalui email yang didaftarkan
+      const html = await render(EmailForgetPassword({ link, url: process.env.FRONTEND_URL }))
+      await sendEmail({
+        from: process.env.EMAIL_ADDRESS,
+        to: email,
+        subject: "Forgot Password",
+        html,
+      })
+      res.status(200).send({ status: 200, message: "please kindly check your email" })
+    } catch (err) {
+      next(err)
+    }
+  }
+  static async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body
+      const user = await MsUserModel.findOne({ where: { email } })
+      if (!user) {
+        throw new CustomError(400, "your credential is not valid")
+      }
+
+      const is_verified = comparePassword(password, user.dataValues.password!)
+      if (!is_verified) {
+        throw new CustomError(400, "your credential is not valid")
+      }
+
+      if (user.dataValues.is_verified == 0) {
+        throw new CustomError(400, "your email has not been verified yet")
+      }
+
+      const payload: IJwtPayload = { username: user.dataValues.username, email: user.dataValues.email }
+      const token = signJwt(payload)
+
+      res
+        .status(200)
+        .cookie("token", token, { httpOnly: true, sameSite: true, maxAge: 1000 * 3600 * 24 })
+        .send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
+  static async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { new_password, token } = req.body
+      const { id: ms_user_id } = verifyJwt(token)
+
+      const hashed_password = await hashPassword(new_password)
+      await MsUserModel.update({ password: hashed_password }, { where: { id: ms_user_id } })
+
+      res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
   static async register(req: Request, res: Response, next: NextFunction) {
     const t = await sq.transaction()
     try {
@@ -61,61 +151,6 @@ export class Controller {
       next(err)
     }
   }
-  static async login(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { email, password } = req.body
-      const user = await MsUserModel.findOne({ where: { email } })
-      if (!user) {
-        throw new CustomError(400, "your credential is not valid")
-      }
-
-      const is_verified = comparePassword(password, user.dataValues.password!)
-      if (!is_verified) {
-        throw new CustomError(400, "your credential is not valid")
-      }
-
-      if (user.dataValues.is_verified == 0) {
-        throw new CustomError(400, "your email has not been verified yet")
-      }
-
-      const payload: IJwtPayload = { username: user.dataValues.username, email: user.dataValues.email }
-      const token = signJwt(payload)
-
-      res
-        .status(200)
-        .cookie("token", token, { httpOnly: true, sameSite: true, maxAge: 1000 * 3600 * 24 })
-        .send({ status: 200, message: "success" })
-    } catch (err) {
-      next(err)
-    }
-  }
-  static async verifyOtp(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { otp, otp_type, token } = req.body
-      const { id: ms_user_id } = verifyJwt(token)
-
-      const actual_otp = (await sq.query(
-        `select *
-        from user_otp uo
-        where uo.ms_user_id = :ms_user_id
-          and uo.otp = :otp
-          and uo.otp_type = :otp_type
-          and uo.expired_at > now()
-          and uo.used_at isnull`,
-        tipe({ ms_user_id, otp, otp_type })
-      )) as IUserOtp[]
-
-      if (!actual_otp.length) {
-        throw new CustomError(400, "otp is not valid")
-      }
-
-      await UserOtpModel.update({ used_at: new Date() }, { where: { id: actual_otp[0].id } })
-      await MsUserModel.update({ is_verified: 1 }, { where: { id: ms_user_id } })
-      res.status(200).send({ status: 200, message: "success" })
-    } catch (err) {
-      next(err)
-    }
-  }
   static async sendOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const { otp_type, token } = req.body
@@ -144,27 +179,28 @@ export class Controller {
       next(err)
     }
   }
-  static async forgotPassword(req: Request, res: Response, next: NextFunction) {
+  static async verifyOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email } = req.body
+      const { otp, otp_type, token } = req.body
+      const { id: ms_user_id } = verifyJwt(token)
 
-      const user = await MsUserModel.findOne({ where: { email } })
-      if (!user) {
-        throw new CustomError(400, "email not found")
+      const actual_otp = (await sq.query(
+        `select *
+        from user_otp uo
+        where uo.ms_user_id = :ms_user_id
+          and uo.otp = :otp
+          and uo.otp_type = :otp_type
+          and uo.expired_at > now()
+          and uo.used_at isnull`,
+        tipe({ ms_user_id, otp, otp_type })
+      )) as IUserOtp[]
+
+      if (!actual_otp.length) {
+        throw new CustomError(400, "otp is not valid")
       }
 
-      const payload: IJwtPayload = { id: user.dataValues.id, email }
-      const token = signJwt(payload)
-
-      const link = `${process.env.FRONTEND_URL}/forgot-password/reset/${token}`
-      // kirim link forget password melalui email yang didaftarkan
-      const html = await render(EmailForgetPassword({ link, url: process.env.FRONTEND_URL }))
-      await sendEmail({
-        from: process.env.EMAIL_ADDRESS,
-        to: email,
-        subject: "Forgot Password",
-        html,
-      })
+      await UserOtpModel.update({ used_at: new Date() }, { where: { id: actual_otp[0].id } })
+      await MsUserModel.update({ is_verified: 1 }, { where: { id: ms_user_id } })
       res.status(200).send({ status: 200, message: "success" })
     } catch (err) {
       next(err)

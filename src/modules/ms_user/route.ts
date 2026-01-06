@@ -4,10 +4,13 @@ import { Controller } from "./controller"
 /* ms_user */
 const router = Router()
 
-router.post("/register", Controller.register)
-router.post("/login", Controller.login)
-router.post("/verify_otp", Controller.verifyOtp)
-router.post("/send_otp", Controller.sendOtp)
+//! POST
+router.post("/change_password", Controller.changePassword)
 router.post("/forgot_password", Controller.forgotPassword)
+router.post("/login", Controller.login)
+router.post("/reset_password", Controller.resetPassword)
+router.post("/register", Controller.register)
+router.post("/send_otp", Controller.sendOtp)
+router.post("/verify_otp", Controller.verifyOtp)
 
 export default router
