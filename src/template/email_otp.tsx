@@ -24,7 +24,7 @@ export default function EmailOtp({ otp, url }: IProps) {
 
       <Tailwind>
         <Body className="bg-[#f4f6f8] font-sans text-[#212121]">
-          <Container className="mx-auto my-[40px] max-w-[480px] bg-white rounded-lg shadow-sm overflow-hidden">
+          <Container className="mx-auto my-10 max-w-120 bg-white rounded-lg shadow-sm overflow-hidden">
 
             {/* Header / Logo */}
             <Section className="py-6 text-center bg-white">
@@ -42,12 +42,12 @@ export default function EmailOtp({ otp, url }: IProps) {
                 Verify your email
               </Heading>
 
-              <Text className="text-[14px] leading-[22px] text-[#4b5563] mb-4">
+              <Text className="text-[14px] leading-5.5 text-[#4b5563] mb-4">
                 Thanks for signing up for <strong>Guardana</strong>.
                 To continue, please use the verification code below.
               </Text>
 
-              <Text className="text-[14px] leading-[22px] text-[#4b5563] mb-6">
+              <Text className="text-[14px] leading-5.5 text-[#4b5563] mb-6">
                 If you didn't request this, you can safely ignore this email.
               </Text>
 

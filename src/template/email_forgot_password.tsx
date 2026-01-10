@@ -25,7 +25,7 @@ export default function EmailForgetPassword({ link, url }: IProps) {
 
       <Tailwind>
         <Body className="bg-[#f4f6f8] font-sans text-[#111827]">
-          <Container className="mx-auto my-[40px] max-w-[480px] bg-white rounded-lg shadow-sm overflow-hidden">
+          <Container className="mx-auto my-10 max-w-120 bg-white rounded-lg shadow-sm overflow-hidden">
 
             {/* Logo */}
             <Section className="py-6 text-center">
@@ -43,7 +43,7 @@ export default function EmailForgetPassword({ link, url }: IProps) {
                 Reset your password
               </Heading>
 
-              <Text className="text-[14px] leading-[22px] text-[#4b5563] mb-4">
+              <Text className="text-[14px] leading-5.5 text-[#4b5563] mb-4">
                 We received a request to reset your <strong>Guardana</strong> account
                 password. Click the button below to set a new password.
               </Text>
@@ -59,7 +59,7 @@ export default function EmailForgetPassword({ link, url }: IProps) {
               </Section>
 
               {/* Fallback */}
-              <Text className="text-[12px] text-[#6b7280] leading-[18px]">
+              <Text className="text-[12px] text-[#6b7280] leading-4.5">
                 If the button above doesn't work, copy and paste this link into
                 your browser:
               </Text>
