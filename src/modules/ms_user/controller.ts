@@ -49,7 +49,7 @@ export class Controller {
       const payload: IJwtPayload = { id: user.dataValues.id, email }
       const token = signJwt(payload)
 
-      const link = `${process.env.FRONTEND_URL}/reset-password/${token}`
+      const link = `${process.env.FRONTEND_URL}/reset_password/${token}`
       // kirim link forget password melalui email yang didaftarkan
       const html = await render(EmailForgetPassword({ link, url: process.env.FRONTEND_URL }))
       await sendEmail({
@@ -71,7 +71,7 @@ export class Controller {
         throw new CustomError(400, "your credential is not valid")
       }
 
-      const is_verified = comparePassword(password, user.dataValues.password!)
+      const is_verified = await comparePassword(password, user.dataValues.password!)
       if (!is_verified) {
         throw new CustomError(400, "your credential is not valid")
       }
@@ -153,7 +153,7 @@ export class Controller {
       next(err)
     }
   }
-  static async sendOtp(req: Request, res: Response, next: NextFunction) {
+  static async resendOtp(req: Request, res: Response, next: NextFunction) {
     const t = await sq.transaction()
     try {
       const { otp_type, token } = req.body
