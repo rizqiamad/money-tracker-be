@@ -30,7 +30,7 @@ export default function EmailForgetPassword({ link, url }: IProps) {
             {/* Logo */}
             <Section className="py-6 text-center">
               <Img
-                src={`${url}/guardana-logo.png`}
+                src={`${url}/public/guardana-logo.png`}
                 width="120"
                 alt="Guardana"
                 className="mx-auto"

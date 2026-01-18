@@ -8,4 +8,7 @@ const router = Router()
 router.post("/bulk_create", Controller.bulkCreate)
 router.post("/list", Controller.list)
 
+//! PATCH
+router.patch("/update", Controller.update)
+
 export default router

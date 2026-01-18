@@ -1,4 +1,3 @@
-import { Express, Request } from "express"
 import { IJwtPayload } from "../helpers/jsonwebtoken"
 
 declare global {

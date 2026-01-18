@@ -11,6 +11,7 @@ import EmailOtp from "../../template/email_otp"
 import EmailForgetPassword from "../../template/email_forgot_password"
 import { IJwtPayload, signJwt, verifyJwt } from "../../helpers/jsonwebtoken"
 import { tipe } from "../../helpers/tipe"
+import { JsonWebTokenError } from "jsonwebtoken"
 
 export class Controller {
   static async changePassword(req: Request, res: Response, next: NextFunction) {
@@ -121,10 +122,49 @@ export class Controller {
       const { id } = (await MsUserModel.create({ username, email, password: hashed_password }, { transaction: t })).dataValues
 
       // create otp untuk user
-      const otp = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 8)()
+      const otp = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 6)()
       await UserOtpModel.create(
         {
           ms_user_id: id,
+          otp,
+          otp_type: "email",
+          expired_at: new Date(Date.now() + 5 * 60 * 1000),
+        },
+        { transaction: t }
+      )
+
+      // kirim otp melalui email yang didaftarkan
+      const html = await render(EmailOtp({ otp, url: process.env.FRONTEND_URL }))
+      await sendEmail({
+        from: process.env.EMAIL_ADDRESS,
+        to: email,
+        subject: "Your Otp Password For the registration, keep it secret",
+        html,
+      })
+
+      const payload: IJwtPayload = { id, email }
+      const token = signJwt(payload)
+
+      t.commit()
+      res.status(200).send({ status: 200, message: "otp code has been sent to your email", token })
+      // res.status(200).send({ status: 200, message: "otp code has been sent to your email" })
+    } catch (err) {
+      t.rollback()
+      next(err)
+    }
+  }
+  static async sendOtp(req: Request, res: Response, next: NextFunction) {
+    const t = await sq.transaction()
+    try {
+      const { otp_type, token } = req.body
+      const { id: ms_user_id, email } = verifyJwt(token)
+      await UserOtpModel.update({ used_at: new Date() }, { where: { ms_user_id, otp_type }, transaction: t })
+
+      // create otp untuk user
+      const otp = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 8)()
+      await UserOtpModel.create(
+        {
+          ms_user_id,
           otp,
           otp_type: "email",
           expired_at: new Date(Date.now() + 5 * 60 * 1000),
@@ -137,49 +177,18 @@ export class Controller {
       await sendEmail({
         from: process.env.EMAIL_ADDRESS,
         to: email,
-        subject: "Your Otp Password For the registration, keep it secret",
-        html,
-      })
-      t.commit()
-
-      const payload: IJwtPayload = { id, email }
-      const token = signJwt(payload)
-
-      res.status(200).send({ status: 200, message: "otp code has been sent to your email", token })
-    } catch (err) {
-      t.rollback()
-      next(err)
-    }
-  }
-  static async sendOtp(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { otp_type, token } = req.body
-      const { id: ms_user_id, email } = verifyJwt(token)
-      await UserOtpModel.update({ used_at: new Date() }, { where: { ms_user_id, otp_type } })
-
-      // create otp untuk user
-      const otp = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 8)()
-      await UserOtpModel.create({
-        ms_user_id,
-        otp,
-        otp_type: "email",
-        expired_at: new Date(Date.now() + 5 * 60 * 1000),
-      })
-
-      // kirim otp melalui email yang didaftarkan
-      const html = await render(EmailOtp({ otp }))
-      await sendEmail({
-        from: process.env.EMAIL_ADDRESS,
-        to: email,
         subject: "Resend otp, keep it secret",
         html,
       })
+      await t.commit()
       res.status(200).send({ status: 200, message: "otp code has been sent to your email" })
     } catch (err) {
+      await t.rollback()
       next(err)
     }
   }
   static async verifyOtp(req: Request, res: Response, next: NextFunction) {
+    const t = await sq.transaction()
     try {
       const { otp, otp_type, token } = req.body
       const { id: ms_user_id } = verifyJwt(token)
@@ -199,11 +208,29 @@ export class Controller {
         throw new CustomError(400, "otp is not valid")
       }
 
-      await UserOtpModel.update({ used_at: new Date() }, { where: { id: actual_otp[0].id } })
-      await MsUserModel.update({ is_verified: 1 }, { where: { id: ms_user_id } })
+      await UserOtpModel.update({ used_at: new Date() }, { where: { id: actual_otp[0].id }, transaction: t })
+      await MsUserModel.update({ is_verified: 1 }, { where: { id: ms_user_id }, transaction: t })
+      await t.commit()
       res.status(200).send({ status: 200, message: "success" })
     } catch (err) {
+      await t.rollback()
       next(err)
+    }
+  }
+  static async verifyToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { token } = req.body
+      if (!token) {
+        throw new CustomError(401, "credential is required")
+      }
+      verifyJwt(token)
+      res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
+      if (err instanceof JsonWebTokenError) {
+        next(new CustomError(401, "unauthorized"))
+      } else {
+        next(err)
+      }
     }
   }
 }

@@ -53,4 +53,15 @@ export class Controller {
       next(err)
     }
   }
+  static async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { amount, ms_account_code, ms_user_id } = req.body
+      // const { id: ms_user_id } = req.user as IJwtPayload
+
+      await UserAccountModel.update({ amount }, { where: { ms_user_id, ms_account_code } })
+      res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
 }

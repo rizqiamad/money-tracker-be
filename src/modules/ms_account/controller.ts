@@ -21,7 +21,7 @@ export class Controller {
       }
 
       const data = await sq.query(
-        `select * from ms_account msa
+        `select msa.ms_account_code,msa.ms_account_name from ms_account msa
         where msa.deleted_at isnull${filter}${filter2}`,
         tipe({ offset: (page - 1) * limit, limit, ms_account_code, ms_account_name })
       )

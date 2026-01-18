@@ -1,5 +1,5 @@
 import server from "./app"
-import { connectDB, disconnectDB, sq } from "./config/connection"
+import { connectDB, disconnectDB } from "./config/connection"
 import log from "./helpers/chalk"
 
 const port: number = Number(process.env.APP_PORT) || 8080

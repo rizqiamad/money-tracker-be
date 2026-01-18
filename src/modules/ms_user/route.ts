@@ -12,5 +12,6 @@ router.post("/reset_password", Controller.resetPassword)
 router.post("/register", Controller.register)
 router.post("/send_otp", Controller.sendOtp)
 router.post("/verify_otp", Controller.verifyOtp)
+router.post("/verify_token", Controller.verifyToken)
 
 export default router
