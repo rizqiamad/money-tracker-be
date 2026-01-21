@@ -15,6 +15,7 @@ router.patch("/reset_password", Controller.resetPassword)
 //! POST
 router.post("/forgot_password", Controller.forgotPassword)
 router.post("/login", Controller.login)
+router.post("/logout", Controller.logout)
 router.post("/register", Controller.register)
 router.post("/resend_otp", Controller.resendOtp)
 router.post("/verify_otp", Controller.verifyOtp)

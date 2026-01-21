@@ -91,6 +91,13 @@ export class Controller {
       next(err)
     }
   }
+  static async logout(_req: Request, res: Response, next: NextFunction) {
+    try {
+      res.status(200).clearCookie("token").send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
   static async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const { new_password, token } = req.body
