@@ -3,7 +3,7 @@ import { verifyJwt } from "../helpers/jsonwebtoken"
 import { CustomError } from "../helpers/error"
 import { JsonWebTokenError } from "jsonwebtoken"
 
-export function verfyToken(req: Request, _res: Response, next: NextFunction) {
+export function verifyToken(req: Request, _res: Response, next: NextFunction) {
   try {
     const { token } = req.cookies
     if (!token) {

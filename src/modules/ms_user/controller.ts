@@ -187,6 +187,9 @@ export class Controller {
       next(err)
     }
   }
+  static async verifyCookie(req: Request, res: Response, _next: NextFunction) {
+    res.status(200).send({ status: 200, message: "success", data: req.user })
+  }
   static async verifyOtp(req: Request, res: Response, next: NextFunction) {
     const t = await sq.transaction()
     try {
