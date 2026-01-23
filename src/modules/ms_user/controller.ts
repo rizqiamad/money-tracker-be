@@ -37,23 +37,6 @@ export class Controller {
       next(err)
     }
   }
-  static async profile(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.user as IJwtPayload
-      const user = await MsUserModel.findByPk(id)
-      res.status(200).send({
-        status: 200,
-        message: "success",
-        data: {
-          username: user?.dataValues.username,
-          email: user?.dataValues.email,
-          no_handphone: user?.dataValues.no_handphone,
-        },
-      })
-    } catch (err) {
-      next(err)
-    }
-  }
   static async forgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.body
@@ -93,7 +76,7 @@ export class Controller {
         throw new CustomError(400, "your credential is not valid")
       }
 
-      if (user.dataValues.is_verified == 0) {
+      if (!user?.dataValues.is_verified) {
         throw new CustomError(400, "your email has not been verified yet")
       }
 
@@ -113,6 +96,24 @@ export class Controller {
   static async logout(_req: Request, res: Response, next: NextFunction) {
     try {
       res.status(200).clearCookie("token").send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
+  static async profile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.user as IJwtPayload
+      const user = await MsUserModel.findByPk(id)
+      res.status(200).send({
+        status: 200,
+        message: "success",
+        data: {
+          username: user?.dataValues.username,
+          email: user?.dataValues.email,
+          no_handphone: user?.dataValues.no_handphone,
+          is_verified: user?.dataValues.is_verified,
+        },
+      })
     } catch (err) {
       next(err)
     }
@@ -210,6 +211,17 @@ export class Controller {
       res.status(200).send({ status: 200, message: "otp code has been sent to your email" })
     } catch (err) {
       await t.rollback()
+      next(err)
+    }
+  }
+  static async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { username, no_handphone } = req.body
+      const { id } = req?.user as IJwtPayload
+
+      await MsUserModel.update({ username, no_handphone }, { where: { id } })
+      res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
       next(err)
     }
   }

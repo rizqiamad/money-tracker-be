@@ -11,6 +11,7 @@ router.get("/profile", verifyToken, Controller.profile)
 //! PATCH
 router.patch("/change_password", Controller.changePassword)
 router.patch("/reset_password", Controller.resetPassword)
+router.patch("/update", verifyToken, Controller.update)
 
 //! POST
 router.post("/forgot_password", Controller.forgotPassword)
