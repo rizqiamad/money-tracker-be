@@ -80,7 +80,7 @@ export class Controller {
         throw new CustomError(400, "your email has not been verified yet")
       }
 
-      const payload: IJwtPayload = { username: user.dataValues.username, email: user.dataValues.email }
+      const payload: IJwtPayload = { id: user.dataValues.id, username: user.dataValues.username, email: user.dataValues.email }
       const token = signJwt(payload)
 
       res

@@ -12,7 +12,9 @@ import cors from "cors"
 const app: Application = express()
 const server: Server = createServer(app)
 
-app.use(cors({ credentials: true, origin: ["http://localhost:5173", "http://localhost:5432"] }))
+// const allowed_origins = process.env.APP_ALLOWED_ORIGINS?.split(",") || []
+
+app.use(cors({ credentials: true, origin: true }))
 app.use(express.static("public"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
