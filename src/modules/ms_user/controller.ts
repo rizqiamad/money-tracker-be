@@ -17,9 +17,9 @@ export class Controller {
   static async changePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const { old_password, new_password } = req.body
-      const { email } = req.user as IJwtPayload
+      const { id } = req.user as IJwtPayload
 
-      const user = await MsUserModel.findOne({ where: { email } })
+      const user = await MsUserModel.findOne({ where: { id } })
       if (!user) {
         throw new CustomError(400, "email not found")
       }
@@ -30,9 +30,26 @@ export class Controller {
       }
 
       const hashed_password = await hashPassword(new_password)
-      await MsUserModel.update({ password: hashed_password }, { where: { email } })
+      await MsUserModel.update({ password: hashed_password }, { where: { id } })
 
       res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
+      next(err)
+    }
+  }
+  static async profile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.user as IJwtPayload
+      const user = await MsUserModel.findByPk(id)
+      res.status(200).send({
+        status: 200,
+        message: "success",
+        data: {
+          username: user?.dataValues.username,
+          email: user?.dataValues.email,
+          no_handphone: user?.dataValues.no_handphone,
+        },
+      })
     } catch (err) {
       next(err)
     }
@@ -80,7 +97,9 @@ export class Controller {
         throw new CustomError(400, "your email has not been verified yet")
       }
 
-      const payload: IJwtPayload = { id: user.dataValues.id, username: user.dataValues.username, email: user.dataValues.email }
+      const payload: IJwtPayload = {
+        id: user.dataValues.id,
+      }
       const token = signJwt(payload)
 
       res
@@ -193,9 +212,6 @@ export class Controller {
       await t.rollback()
       next(err)
     }
-  }
-  static async verifyCookie(req: Request, res: Response, _next: NextFunction) {
-    res.status(200).send({ status: 200, message: "success", data: req.user })
   }
   static async verifyOtp(req: Request, res: Response, next: NextFunction) {
     const t = await sq.transaction()

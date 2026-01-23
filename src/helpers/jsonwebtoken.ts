@@ -2,7 +2,6 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 
 export interface IJwtPayload extends JwtPayload {
   id?: string
-  username?: string
   email?: string
 }
 

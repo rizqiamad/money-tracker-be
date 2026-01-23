@@ -6,7 +6,7 @@ import { verifyToken } from "../../middleware/token"
 const router = Router()
 
 //! GET
-router.get("/verify_cookie", verifyToken, Controller.verifyCookie)
+router.get("/profile", verifyToken, Controller.profile)
 
 //! PATCH
 router.patch("/change_password", Controller.changePassword)
