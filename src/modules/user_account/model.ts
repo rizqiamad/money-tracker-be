@@ -6,6 +6,8 @@ export interface IUserAccount {
   ms_user_id?: string
   ms_account_code?: string
   amount?: number
+  created_at?: Date
+  updated_at?: Date
   deleted_at?: Date
 }
 
@@ -28,11 +30,17 @@ const UserAccountModel = sq.define<Model<IUserAccount>>(
     amount: {
       type: DataTypes.BIGINT,
     },
+    created_at: {
+      type: DataTypes.DATE,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+    },
     deleted_at: {
       type: DataTypes.DATE,
     },
   },
-  { createdAt: false, updatedAt: false, deletedAt: "deleted_at" }
+  { createdAt: "created_at", updatedAt: "updated_at", deletedAt: "deleted_at" }
 )
 
 export default UserAccountModel

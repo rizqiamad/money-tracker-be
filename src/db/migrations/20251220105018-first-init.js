@@ -106,6 +106,12 @@ module.exports = {
       amount: {
         type: Sequelize.BIGINT
       },
+      created_at: {
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        type: Sequelize.DATE
+      },
       deleted_at: {
         type: Sequelize.DATE
       }
