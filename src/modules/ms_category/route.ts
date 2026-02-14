@@ -2,17 +2,10 @@ import { Router } from "express"
 import { Controller } from "./controller"
 import { verifyToken } from "../../middleware/token"
 
-/* user_account */
+/* ms_category */
 const router = Router()
 
 //! POST
-router.post("/bulk_create", verifyToken, Controller.bulkCreate)
 router.post("/list", verifyToken, Controller.list)
-
-//! PATCH
-router.patch("/update", verifyToken, Controller.update)
-
-//! DELETE
-router.delete("/delete/:id", verifyToken, Controller.delete)
 
 export default router

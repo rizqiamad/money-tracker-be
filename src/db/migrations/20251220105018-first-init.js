@@ -117,24 +117,74 @@ module.exports = {
       }
     }, { transaction: t })
 
+    await queryInterface.createTable('ms_category', {
+      ms_category_code: {
+        type: Sequelize.STRING,
+        primaryKey: true
+      },
+      ms_category_name: {
+        type: Sequelize.STRING,
+      },
+      created_at: {
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        type: Sequelize.DATE
+      },
+      deleted_at: {
+        type: Sequelize.DATE
+      }
+    }, { transaction: t })
+
+    await queryInterface.createTable('sub_category', {
+      sub_category_code: {
+        type: Sequelize.STRING,
+        primaryKey: true
+      },
+      ms_category_code: {
+        type: Sequelize.STRING,
+        references: { model: 'ms_category', key: 'ms_category_code' }
+      },
+      sub_category_name: {
+        type: Sequelize.STRING,
+      },
+      created_at: {
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        type: Sequelize.DATE
+      },
+      deleted_at: {
+        type: Sequelize.DATE
+      }
+    }, { transaction: t })
+
     await queryInterface.createTable('record', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      user_account_id: {
+      from_user_account_id: {
+        type: Sequelize.INTEGER,
+        references: { model: "user_account", key: "id" },
+      },
+      to_user_account_id: {
         type: Sequelize.INTEGER,
         references: { model: "user_account", key: "id" },
       },
       date_action: {
         type: Sequelize.DATE
       },
+      type: {
+        type: Sequelize.STRING
+      },
       amount: {
         type: Sequelize.BIGINT
       },
-      category: {
-        type: Sequelize.STRING
+      sub_category_code: {
+        type: Sequelize.STRING,
+        references: { model: 'sub_category', key: 'sub_category_code' }
       },
       description: {
         type: Sequelize.TEXT
@@ -153,6 +203,8 @@ module.exports = {
     await queryInterface.dropTable('user_account', { transaction: t })
     await queryInterface.dropTable('ms_user', { transaction: t })
     await queryInterface.dropTable('ms_account', { transaction: t })
+    await queryInterface.dropTable('sub_category', { transaction: t })
+    await queryInterface.dropTable('ms_category', { transaction: t })
     t.commit()
   }
 };

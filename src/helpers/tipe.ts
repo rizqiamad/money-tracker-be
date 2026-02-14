@@ -6,6 +6,6 @@ interface IReturn {
   transaction?: Transaction
 }
 
-export function tipe(replacements: BindOrReplacements, transaction?: Transaction): IReturn {
+export function tipe(replacements?: BindOrReplacements, transaction?: Transaction): IReturn {
   return { type: QueryTypes.SELECT, replacements, transaction }
 }

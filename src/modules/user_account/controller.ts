@@ -3,6 +3,7 @@ import UserAccountModel from "./model"
 import { sq } from "../../config/connection"
 import { tipe } from "../../helpers/tipe"
 import { IJwtPayload } from "../../helpers/jsonwebtoken"
+import RecordModel from "../record/model"
 
 export class Controller {
   static async bulkCreate(req: Request, res: Response, next: NextFunction) {
@@ -14,6 +15,19 @@ export class Controller {
       await UserAccountModel.bulkCreate(req.body)
       res.status(200).send({ status: 200, message: "success" })
     } catch (err) {
+      next(err)
+    }
+  }
+  static async delete(req: Request, res: Response, next: NextFunction) {
+    const t = await sq.transaction()
+    try {
+      const { id } = req.params
+      await RecordModel.destroy({ where: { user_account_id: id }, transaction: t })
+      await UserAccountModel.destroy({ where: { id }, transaction: t })
+      await t.commit()
+      res.status(200).send({ status: 200, message: "success" })
+    } catch (err) {
+      await t.rollback()
       next(err)
     }
   }
