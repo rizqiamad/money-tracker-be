@@ -3,10 +3,12 @@ import { sq } from "../../config/connection"
 
 export interface IRecord {
   id?: number
-  user_account_id?: number
+  from_user_account_id?: number
+  to_user_account_id?: number
   date_action?: Date
+  type?: string
   amount?: number
-  category?: string
+  sub_category_code?: string
   description?: string
   created_at?: Date
 }
@@ -19,18 +21,26 @@ const RecordModel = sq.define<Model<IRecord>>(
       primaryKey: true,
       autoIncrement: true,
     },
-    user_account_id: {
+    from_user_account_id: {
+      type: DataTypes.INTEGER,
+      references: { model: "user_account", key: "id" },
+    },
+    to_user_account_id: {
       type: DataTypes.INTEGER,
       references: { model: "user_account", key: "id" },
     },
     date_action: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
+    },
+    type: {
+      type: DataTypes.STRING,
     },
     amount: {
       type: DataTypes.BIGINT,
     },
-    category: {
+    sub_category_code: {
       type: DataTypes.STRING,
+      references: { model: "sub_category", key: "sub_category_code" },
     },
     description: {
       type: DataTypes.TEXT,

@@ -7,5 +7,6 @@ const router = Router()
 
 //! POST
 router.post("/create", verifyToken, Controller.create)
+router.post("/list", verifyToken, Controller.list)
 
 export default router

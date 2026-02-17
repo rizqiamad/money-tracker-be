@@ -174,7 +174,7 @@ module.exports = {
         references: { model: "user_account", key: "id" },
       },
       date_action: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       type: {
         type: Sequelize.STRING

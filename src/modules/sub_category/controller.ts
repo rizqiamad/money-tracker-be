@@ -19,7 +19,7 @@ export class Controller {
       }
 
       const data = await sq.query(
-        `select sc.sub_category_code,sc.ms_category_code,sc.sub_category_name from sub_category sc`,
+        `select sc.sub_category_code,sc.ms_category_code,sc.sub_category_name from sub_category sc where sc.sub_category_code notnull${value1}`,
         tipe({ sub_category_code, ms_category_code, sub_category_name: `%${sub_category_name}%` })
       )
       res.status(200).send({ status: 200, message: "success", data })
