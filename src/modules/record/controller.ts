@@ -32,6 +32,7 @@ export class Controller {
       date_action,
       sub_category_code,
       description,
+      search,
       order_by_name,
       order_by_value,
       current,
@@ -62,6 +63,9 @@ export class Controller {
       if (description) {
         value1 += ` and r.description ilike :description`
       }
+      if (search) {
+        value1 += ` and (r.description ilike :search or sc.sub_category_name ilike :search or ua.ms_account_code ilike :search or ua2.ms_account_code ilike :search)`
+      }
       if (order_by_name && order_by_value) {
         if (order_by_name == "date_action") {
           value2 = ` order by r.date_action :order_by_value`
@@ -85,6 +89,7 @@ export class Controller {
           date_action,
           sub_category_code,
           description: `%${description}%`,
+          search: `%${search}%`,
           order_by_value,
           offset: +limit * (+current - 1),
           limit,
@@ -95,6 +100,8 @@ export class Controller {
         const count: any[] = await sq.query(
           `select count(*)::int total from record r 
           join user_account ua on ua.id = from_user_account_id 
+          left join user_account ua2 on ua2.id = to_user_account_id 
+          left join sub_category sc on sc.sub_category_code = r.sub_category_code
           where r.id notnull${value1}`,
           tipe({
             id,
@@ -104,6 +111,7 @@ export class Controller {
             date_action,
             sub_category_code,
             description: `%${description}%`,
+            search: `%${search}%`,
             order_by_value,
           })
         )
