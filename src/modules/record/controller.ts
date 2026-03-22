@@ -123,4 +123,46 @@ export class Controller {
       next(err)
     }
   }
+  static async summary(req: Request, res: Response, next: NextFunction) {
+    const { date_action } = req.query
+    try {
+      const income_summary: any[] = await sq.query(
+        `select sum(r.amount)::int as amount, sc.ms_category_code, mc.ms_category_name
+        from record r
+        join sub_category sc on sc.sub_category_code = r.sub_category_code
+        join ms_category mc on mc.ms_category_code = sc.ms_category_code
+        where r.date_action >= date_trunc('month', :date_action::date AT TIME ZONE 'Asia/Jakarta')
+          and r.date_action < date_trunc('month', :date_action::date AT TIME ZONE 'Asia/Jakarta') + INTERVAL '1 month' 
+          and r.type = 'income'
+        group by sc.ms_category_code, mc.ms_category_name`,  
+        tipe({ date_action })
+      )
+      const expense_summary: any[] = await sq.query(
+        `select sum(r.amount)::int as amount, sc.ms_category_code, mc.ms_category_name
+        from record r
+        join sub_category sc on sc.sub_category_code = r.sub_category_code
+        join ms_category mc on mc.ms_category_code = sc.ms_category_code
+        where r.date_action >= date_trunc('month', :date_action::date AT TIME ZONE 'Asia/Jakarta')
+          and r.date_action < date_trunc('month', :date_action::date AT TIME ZONE 'Asia/Jakarta') + INTERVAL '1 month' 
+          and r.type = 'expense'
+        group by sc.ms_category_code, mc.ms_category_name`,  
+        tipe({ date_action })
+      )
+      const date_summary: any[] = await sq.query(
+        `select
+          r.date_action,
+          sum(case when r.type = 'income' then r.amount else 0 end)::int as income,
+          sum(case when r.type = 'expense' then r.amount else 0 end)::int as expense
+        from record r
+        where r.date_action >= date_trunc('month', :date_action::date AT TIME ZONE 'Asia/Jakarta')
+          and r.date_action < date_trunc('month', :date_action::date AT TIME ZONE 'Asia/Jakarta') + INTERVAL '1 month' 
+          and r.type <> 'transfer'
+        group by r.date_action`,
+        tipe({ date_action })
+      )
+      res.status(200).send({ status: 200, message: "success", data: { income_summary, expense_summary, date_summary } })
+    } catch (err) {
+      next(err)
+    }
+  }
 }

@@ -5,7 +5,7 @@ import { tipe } from "../../helpers/tipe"
 export class Controller {
   static async list(req: Request, res: Response, next: NextFunction) {
     try {
-      const { page, limit, ms_account_code, ms_account_name } = req.body
+      const { page, limit, ms_account_code, ms_account_name, ms_account_type } = req.body
 
       let filter = ``
       let filter2 = ``
@@ -16,14 +16,17 @@ export class Controller {
       if (ms_account_name) {
         filter += ` and msa.ms_account_name ilike :ms_account_name`
       }
+      if (ms_account_type) {
+        filter += ` and msa.ms_account_type = :ms_account_type`
+      }
       if (page && limit) {
         filter2 += ` offset :offset limit :limit`
       }
 
       const data = await sq.query(
-        `select msa.ms_account_code,msa.ms_account_name from ms_account msa
+        `select msa.ms_account_code,msa.ms_account_name,msa.ms_account_type from ms_account msa
         where msa.deleted_at isnull${filter}${filter2}`,
-        tipe({ offset: (page - 1) * limit, limit, ms_account_code, ms_account_name })
+        tipe({ offset: (page - 1) * limit, limit, ms_account_code, ms_account_name, ms_account_type })
       )
 
       if (page && limit) {

@@ -9,4 +9,7 @@ const router = Router()
 router.post("/create", verifyToken, Controller.create)
 router.post("/list", verifyToken, Controller.list)
 
+//! GET
+router.get("/summary", verifyToken, Controller.summary)
+
 export default router

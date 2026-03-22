@@ -78,6 +78,9 @@ module.exports = {
       ms_account_name: {
         type: Sequelize.STRING,
       },
+      ms_account_type: {
+        type: Sequelize.STRING,
+      },
       created_at: {
         type: Sequelize.DATE
       },

@@ -51,7 +51,7 @@ export class Controller {
       }
 
       const data = await sq.query(
-        `select ua.id,ua.ms_account_code,msa.ms_account_name,ua.amount::int from user_account ua
+        `select ua.id,ua.ms_account_code,msa.ms_account_name,msa.ms_account_type,ua.amount::int from user_account ua
         join ms_account msa on msa.ms_account_code = ua.ms_account_code
         where ua.ms_user_id = :ms_user_id and ua.deleted_at isnull${filter}${filter2}`,
         tipe({ offset: (current - 1) * limit, limit, id, ms_user_id, ms_account_code })
