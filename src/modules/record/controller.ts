@@ -68,7 +68,7 @@ export class Controller {
       }
       if (order_by_name && order_by_value) {
         if (order_by_name == "date_action") {
-          value2 = ` order by r.date_action :order_by_value`
+          value2 = ` order by r.date_action ${order_by_value}`
         }
       }
       if (current && limit) {
@@ -76,10 +76,11 @@ export class Controller {
       }
 
       const data = await sq.query(
-        `select r.*,ua.ms_account_code from_user_account_name,ua2.ms_account_code to_user_account_name,sc.sub_category_name from record r 
+        `select r.id as record_id,r.amount::int as amount,r.type,r.date_action,r.description,ua.ms_account_code from_user_account_code,ua2.ms_account_code to_user_account_code,sc.sub_category_name,mc.ms_category_name from record r 
         join user_account ua on ua.id = from_user_account_id 
         left join user_account ua2 on ua2.id = to_user_account_id 
         left join sub_category sc on sc.sub_category_code = r.sub_category_code
+        join ms_category mc on mc.ms_category_code = sc.ms_category_code
         where r.id notnull${value1}${value2}`,
         tipe({
           id,
@@ -90,7 +91,6 @@ export class Controller {
           sub_category_code,
           description: `%${description}%`,
           search: `%${search}%`,
-          order_by_value,
           offset: +limit * (+current - 1),
           limit,
         })
@@ -102,6 +102,7 @@ export class Controller {
           join user_account ua on ua.id = from_user_account_id 
           left join user_account ua2 on ua2.id = to_user_account_id 
           left join sub_category sc on sc.sub_category_code = r.sub_category_code
+          join ms_category mc on mc.ms_category_code = sc.ms_category_code
           where r.id notnull${value1}`,
           tipe({
             id,
@@ -112,7 +113,6 @@ export class Controller {
             sub_category_code,
             description: `%${description}%`,
             search: `%${search}%`,
-            order_by_value,
           })
         )
 
