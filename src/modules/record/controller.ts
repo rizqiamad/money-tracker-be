@@ -3,6 +3,7 @@ import RecordModel from "./model"
 import { sq } from "../../config/connection"
 import UserAccountModel from "../user_account/model"
 import { tipe } from "../../helpers/tipe"
+import { IJwtPayload } from "../../helpers/jsonwebtoken"
 
 export class Controller {
   static async create(req: Request, res: Response, next: NextFunction) {
@@ -38,6 +39,7 @@ export class Controller {
       current,
       limit,
     } = req.body
+    const { id: ms_user_id } = req.user as IJwtPayload
     try {
       let value1 = ``
       let value2 = ` order by r.date_action`
@@ -80,10 +82,11 @@ export class Controller {
         join user_account ua on ua.id = from_user_account_id 
         left join user_account ua2 on ua2.id = to_user_account_id 
         left join sub_category sc on sc.sub_category_code = r.sub_category_code
-        join ms_category mc on mc.ms_category_code = sc.ms_category_code
-        where r.id notnull${value1}${value2}`,
+        left join ms_category mc on mc.ms_category_code = sc.ms_category_code
+        where r.id notnull and ua.ms_user_id = :ms_user_id${value1}${value2}`,
         tipe({
           id,
+          ms_user_id,
           from_user_account_id,
           to_user_account_id,
           type,
@@ -102,10 +105,11 @@ export class Controller {
           join user_account ua on ua.id = from_user_account_id 
           left join user_account ua2 on ua2.id = to_user_account_id 
           left join sub_category sc on sc.sub_category_code = r.sub_category_code
-          join ms_category mc on mc.ms_category_code = sc.ms_category_code
-          where r.id notnull${value1}`,
+          left join ms_category mc on mc.ms_category_code = sc.ms_category_code
+          where r.id notnull and ua.ms_user_id = :ms_user_id${value1}`,
           tipe({
             id,
+            ms_user_id,
             from_user_account_id,
             to_user_account_id,
             type,
