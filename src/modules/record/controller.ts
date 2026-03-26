@@ -32,10 +32,13 @@ export class Controller {
       type,
       date_action,
       sub_category_code,
+      ms_category_code,
       description,
       search,
       order_by_name,
       order_by_value,
+      start_date,
+      end_date,
       current,
       limit,
     } = req.body
@@ -62,6 +65,9 @@ export class Controller {
       if (sub_category_code) {
         value1 += ` and r.sub_category_code = :sub_category_code`
       }
+      if (ms_category_code) {
+        value1 += ` and sc.ms_category_code = :ms_category_code`
+      }
       if (description) {
         value1 += ` and r.description ilike :description`
       }
@@ -73,12 +79,15 @@ export class Controller {
           value2 = ` order by r.date_action ${order_by_value}`
         }
       }
+      if (start_date && end_date) {
+        value1 += ` and r.date_action between :start_date and :end_date`
+      }
       if (current && limit) {
         value2 += ` offset :offset limit :limit`
       }
 
       const data = await sq.query(
-        `select r.id as record_id,r.amount::int as amount,r.type,r.date_action,r.description,ua.ms_account_code from_user_account_code,ua2.ms_account_code to_user_account_code,sc.sub_category_name,mc.ms_category_name from record r 
+        `select r.id as record_id,r.amount::int as amount,r.type,r.date_action,r.description,ua.ms_account_code from_user_account_code,ua2.ms_account_code to_user_account_code,r.sub_category_code,sc.ms_category_code,sc.sub_category_name,mc.ms_category_name from record r 
         join user_account ua on ua.id = from_user_account_id 
         left join user_account ua2 on ua2.id = to_user_account_id 
         left join sub_category sc on sc.sub_category_code = r.sub_category_code
@@ -92,8 +101,11 @@ export class Controller {
           type,
           date_action,
           sub_category_code,
+          ms_category_code,
           description: `%${description}%`,
           search: `%${search}%`,
+          start_date,
+          end_date,
           offset: +limit * (+current - 1),
           limit,
         })
@@ -115,8 +127,11 @@ export class Controller {
             type,
             date_action,
             sub_category_code,
+            ms_category_code,
             description: `%${description}%`,
             search: `%${search}%`,
+            start_date,
+            end_date,
           })
         )
 
