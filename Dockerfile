@@ -1,12 +1,16 @@
-FROM node:20-alpine
-
+FROM node:20-alpine AS builder
 WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm ci --only=production
-
+COPY package.json package-lock.json tsconfig.json ./
+RUN npm ci
 COPY . .
+RUN npm run build
 
-EXPOSE 3000
+FROM node:20-alpine AS production
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 
-CMD ["node", "src/index.js"]
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 8080
+CMD ["npm", "start"]
