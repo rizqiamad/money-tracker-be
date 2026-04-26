@@ -1,5 +1,7 @@
 import dotenv from "dotenv"
-dotenv.config({ path: `.env.${process.env.NODE_APP}` })
+if (process.env.NODE_APP !== "production") {
+  dotenv.config({ path: `.env.${process.env.NODE_APP}` })
+}
 import express, { Application, Request, Response } from "express"
 import { createServer, Server } from "http"
 import morgan from "morgan"
