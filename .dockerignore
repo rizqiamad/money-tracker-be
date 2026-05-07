@@ -4,4 +4,5 @@ node_modules
 README.md
 dist
 .env
+.env.*
 *.log

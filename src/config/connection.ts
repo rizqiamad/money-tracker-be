@@ -15,7 +15,7 @@ export const sq = new Sequelize({
 })
 
 export async function connectDB() {
-  console.log(`------------------DATABASE ${process.env.NODE_APP?.toUpperCase()}------------------`)
+  console.log(`------------------DATABASE ${process.env.NODE_ENV?.toUpperCase()}------------------`)
   try {
     await sq.authenticate()
     log.info(`[database]: database connected successfully`)

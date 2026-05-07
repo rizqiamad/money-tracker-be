@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_APP=development ts-node-dev ./src/server.ts",
-    "start": "node dist/server.js",
-    "build": "tsc",
+    "dev": "cross-env NODE_ENV=development ts-node-dev ./src/server.ts",
+    "start:dev": "node dist/server.js",
+    "start": "node src/server.js",
+    "build": "tsc && cp ./src/config/database.js ./dist/config && cp -r ./src/db ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
