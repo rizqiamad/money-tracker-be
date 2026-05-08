@@ -7,7 +7,7 @@ RUN npm run build
 
 FROM node:20-alpine AS production
 WORKDIR /app
-COPY package.json package-lock.json .sequelizerc ./
+COPY package.json package-lock.json .sequelizerc public ./
 RUN npm ci --only=production
 
 COPY --from=builder /app/dist ./src
