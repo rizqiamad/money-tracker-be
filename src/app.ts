@@ -24,6 +24,7 @@ const limiter = rateLimit({
   legacyHeaders: false,
   ipv6Subnet: 56,
 })
+app.set("trust proxy", 1)
 app.use(limiter)
 app.use(cors({ credentials: true, origin: allowed_origins }))
 app.use(express.static("public"))
