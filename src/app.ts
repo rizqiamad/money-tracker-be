@@ -17,21 +17,20 @@ const server: Server = createServer(app)
 
 const allowed_origins = process.env.APP_ALLOWED_ORIGINS?.split(",") || []
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 100,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-  ipv6Subnet: 56,
-})
-app.set("trust proxy", 1)
-app.use(limiter)
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    legacyHeaders: false,
+    ipv6Subnet: 56,
+  })
+)
 app.use(cors({ credentials: true, origin: allowed_origins }))
 app.use(express.static("public"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(validateBody)
-app.use(morgan("dev"))
+app.use(morgan("common"))
 app.use(cookieParser())
 app.use("/api", router)
 
