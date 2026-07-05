@@ -10,13 +10,22 @@ import { errorHandler } from "./helpers/error"
 import cookieParser from "cookie-parser"
 import { validateBody } from "./middleware/body"
 import cors from "cors"
+import rateLimit from "express-rate-limit"
 
 const app: Application = express()
 const server: Server = createServer(app)
 
-// const allowed_origins = process.env.APP_ALLOWED_ORIGINS?.split(",") || []
+const allowed_origins = process.env.APP_ALLOWED_ORIGINS?.split(",") || []
 
-app.use(cors({ credentials: true, origin: true }))
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+})
+app.use(limiter)
+app.use(cors({ credentials: true, origin: allowed_origins }))
 app.use(express.static("public"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

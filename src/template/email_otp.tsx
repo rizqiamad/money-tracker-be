@@ -29,7 +29,7 @@ export default function EmailOtp({ otp, url }: IProps) {
             {/* Header / Logo */}
             <Section className="py-6 text-center bg-white">
               <Img
-                src={`${url}/public/guardana-logo.png`}
+                src={`${url}/guardana-logo.png`}
                 width="120"
                 alt="Guardana"
                 className="mx-auto"
